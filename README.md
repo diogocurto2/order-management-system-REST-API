@@ -1,11 +1,12 @@
 ﻿# Order Management System REST API
+
 ## Objective
 The goal of this project is to build an exemplary project with the specifications provided in the section: `The code Challenge`.
 
 ## Compose sample application: ASP.NET with MS SQL server database
 ```
 .
-├── api
+├── API
 │   ├── OrderManagement.Api
 |   └── OrderManagement.Domain
 |   └── OrderManagement.Infra
@@ -15,11 +16,46 @@ The goal of this project is to build an exemplary project with the specification
 |   └── OrderManagement.Domain.Tests
 |   └── OrderManagement.Infra.Tests
 |   └── OrderManagement.UseCases.Tests
-└── db
-    ├── OrderManagement.DataBase
+└── DB
+    ├── OrderManagement.Database
 ```
 
+### OrderManagement.Database
+The database project contains the entire structure for creating database tables, stored procedures, and performing the initial data load.
 
+### The code
+This project's structure follows the principles of Clean Architecture, aiming to create a well-organized and maintainable system by clearly separating responsibilities. The architecture is designed with concentric layers, each serving a specific purpose, and dependency flow moving from the core to the periphery. Below is a breakdown of the project structure in line with these principles:
+
+#### OrderManagement.Domain
+This is the heart of the application. It houses the entities and business rules. It stands independently from other layers, avoiding dependencies on them. In this layer, domain models are defined, along with the main operations the application is designed to perform.
+
+#### OrderManagement.UseCases
+Focused on application use cases, this layer orchestrates external actions. It relies on the domain layer and applies business rules to address user needs. Each use case can leverage domain services to achieve its objectives.
+
+#### OrderManagement.Infra
+Implementations of interfaces defined in the domain and use cases reside here. This layer handles technical aspects like database access, and Stored Procedure calls. While it relies on both domain and use cases layers, they remain independent of this layer.
+
+#### OrderManagement.Api
+The outermost layer interacts with the external world, handling HTTP requests. This layer depends on the use cases and infrastructure layers to execute its tasks.
+
+### Tests
+NUnit was used as the testing framework. Each layer has its own set of unit tests. The tests included in the "OrderManagement.Infra.Tests" project are integration tests for the database access layer with the actual database. Therefore, it's necessary for the database to be up and running for these tests to be executed.
+
+## Getting Started
+
+This project was developed using Visual Studio 2022. The steps to initiate the project were set up to run in this environment.
+To get started with the project, follow these steps:
+
+1. Clone this repository.
+2. Download and Install the SQL server or create a docker with the SQL server
+3. Build and publish "OrderManagement.Database" to SQL server
+4. Set the startup project to "OrderManagement.Api"
+5. Adjust the SQL server connection string on "OrderManagement.Api" "appsettings.json"
+6. Run [f5] to start the application.
+
+Visual Studio will launch the project's Swagger UI, where you can execute API functions through the "Try out" feature.
+
+To test the "CreateOrder" function, it's necessary to first use the "Login" function and then utilize the bearer token. The other GET functions do not require login.
 
 # The Code Challenge
 
