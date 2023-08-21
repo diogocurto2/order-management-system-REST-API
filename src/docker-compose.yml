@@ -1,8 +1,30 @@
 version: '3.4'
 
-networks:
-  default:
+# networks:
+#   default:
 
+# services:
+#     ordermanagement.api:
+#         container_name: ordermanagement-webapi
+#         image: ${DOCKER_REGISTRY-}ordermanagementapi
+#         build:
+#             context: .
+#             dockerfile: api/OrderManagement.Api/Dockerfile
+#         networks:
+#             - default
+
+#     ordermanagement.db:
+#         container_name: ordermanagement-mssql
+#         image: "mcr.microsoft.com/mssql/server:2022-latest"
+#         ports:
+#             - "1433:1433"
+#         environment:
+#             MSSQL_SA_PASSWORD: "P4ssw0rd"
+#             ACCEPT_EULA: "Y"
+#             MSSQL_DB: OrderManagement
+#         networks:
+#             - default
+        
 services:
     ordermanagement.api:
         container_name: ordermanagement-webapi
@@ -10,21 +32,23 @@ services:
         build:
             context: .
             dockerfile: api/OrderManagement.Api/Dockerfile
-        networks:
-            - default
+        environment:
+          DbServer: "mssql-server"
+          DbPort: "1433"
+          DbUser: "SA"
+          Password: "P4ssw0rd"
+          Database: "OrderManagement"
 
     ordermanagement.db:
         container_name: ordermanagement-mssql
         image: "mcr.microsoft.com/mssql/server:2022-latest"
+        # build:
+        #     context: .
+        #     dockerfile: db/OrderManagement.DataBase/Dockerfile
         ports:
             - "1433:1433"
         environment:
             MSSQL_SA_PASSWORD: "P4ssw0rd"
             ACCEPT_EULA: "Y"
-            MSSQL_DB: OrderManagement
-        networks:
-            - default
-        
-
   
   

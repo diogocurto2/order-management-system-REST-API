@@ -1,27 +1,20 @@
-# Use the base image with SQL Server tools
-FROM mcr.microsoft.com/mssql-tools AS build
+FROM mcr.microsoft.com/dotnet/framework/sdk:4.8-windowsservercore-ltsc2019 AS builder
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-# Copy your SQL database project folder to the image
-COPY ./OrderManagement.Database /src
+# add SSDT build tools
+RUN nuget install Microsoft.Data.Tools.Msbuild -Version 10.0.61804.210
 
-# Set working directory
-WORKDIR /src
+# Install SQLPackage 
+RUN Invoke-WebRequest -Uri https://go.microsoft.com/fwlink/?linkid=2157302 -OutFile sqlpackage.zip; Expand-Archive -Path sqlpackage.zip -DestinationPath sqlpackage
 
-# Publish the database project
-RUN sqlpackage /Action:Publish /SourceFile:OrderManagement.Database.dacpac /TargetServerName:localhost /TargetDatabaseName:ordermanagement /p:IncludeCompositeObjects=False
+# Add the DACPAC to the image
+COPY --from=builder ["db/OrderManagement.Database/bin/Debug/OrderManagement.Database.dacpac", "/db.dacpac"]
 
-# Use the SQL Server base image for the final image
-FROM mcr.microsoft.com/mssql/server
+# Configure external build arguments to allow configurability.
+ARG DBNAME=OrderManagement
+ARG PASSWORD
 
-# Set environment variables
-ENV SA_PASSWORD=password
+# Configure the required environmental variables
 ENV ACCEPT_EULA=Y
-
-# Copy the published DACPAC file from the build stage
-COPY --from=build /src/OrderManagement.Database.dacpac /usr/src/app/OrderManagement.Database.dacpac
-
-# Run the SQLCMD to deploy the DACPAC file
-RUN /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -i /usr/src/app/OrderManagement.Database.dacpac
-
-# Expose the SQL Server port
-EXPOSE 1433
+ENV SA_PASSWORD=$env:PASSWORD
+RUN "C:\sqlpackage\sqlpackage.exe" /a:Publish /sf:"db.dacpac" /tsn:. /tdn:$env:DBNAME
