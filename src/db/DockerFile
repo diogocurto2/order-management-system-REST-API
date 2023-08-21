@@ -1,0 +1,27 @@
+# Use the base image with SQL Server tools
+FROM mcr.microsoft.com/mssql-tools AS build
+
+# Copy your SQL database project folder to the image
+COPY ./OrderManagement.Database /src
+
+# Set working directory
+WORKDIR /src
+
+# Publish the database project
+RUN sqlpackage /Action:Publish /SourceFile:OrderManagement.Database.dacpac /TargetServerName:localhost /TargetDatabaseName:ordermanagement /p:IncludeCompositeObjects=False
+
+# Use the SQL Server base image for the final image
+FROM mcr.microsoft.com/mssql/server
+
+# Set environment variables
+ENV SA_PASSWORD=password
+ENV ACCEPT_EULA=Y
+
+# Copy the published DACPAC file from the build stage
+COPY --from=build /src/OrderManagement.Database.dacpac /usr/src/app/OrderManagement.Database.dacpac
+
+# Run the SQLCMD to deploy the DACPAC file
+RUN /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -i /usr/src/app/OrderManagement.Database.dacpac
+
+# Expose the SQL Server port
+EXPOSE 1433

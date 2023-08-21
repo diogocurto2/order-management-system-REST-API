@@ -23,23 +23,23 @@ namespace OrderManagement.UseCases.Orders
         public async Task<CreateOrderOutput> Execute(CreateOrderInput input)
         {
             Customer customer = await _customerRepository.GetByIdAsync(input.CustomertId);
-            //if (customer == null)
-            //{
-            //    throw new ArgumentException(
-            //        string.Format("CustomertId {0} does not exists", input.CustomertId)
-            //        );
-            //}
+            if (customer == null)
+            {
+                throw new ArgumentException(
+                    string.Format("CustomertId {0} does not exists", input.CustomertId)
+                    );
+            }
 
             var order = new Order(input.CustomertId);
             foreach (var item in input.Itens)
             {
                 Product product = await _productRepository.GetByIdAsync(item.ProductId);
-                //if (product == null)
-                //{
-                //    throw new ArgumentException(
-                //        string.Format("ProductId {0} does not exists", item.ProductId)
-                //        );
-                //}
+                if (product == null)
+                {
+                    throw new ArgumentException(
+                        string.Format("ProductId {0} does not exists", item.ProductId)
+                        );
+                }
 
                 order.AddOrderItem(product, item.Quantity);
             }

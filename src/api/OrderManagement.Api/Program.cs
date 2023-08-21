@@ -4,12 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using OrderManagement.Domain.Entites;
 using OrderManagement.Domain.Repositories;
 using OrderManagement.Infra.Data;
 using OrderManagement.Infra.Repositories;
 using OrderManagement.UseCases.Orders;
 using OrderManagement.UseCases.Products;
-using ProductManagement.Infra.Repositories;
+using OrderManagement.Infra.Repositories;
 using System.Reflection;
 using System.Text;
 
@@ -59,9 +60,13 @@ builder.Services.AddSwaggerGen(opt =>
 
 builder.Services.AddDbContext<OrderManagementDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("OrderManagementConnectionString"));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("OrderManagementConnectionString")
+        , b =>
+        {
+            b.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5), null);
+        });
 });
-
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();

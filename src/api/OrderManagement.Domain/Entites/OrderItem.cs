@@ -19,7 +19,6 @@
             ProductId = product.Id;
             Product = product;
             Quantity = quantity;
-            Cost = quantity * product.Price;
         }
     }
 }

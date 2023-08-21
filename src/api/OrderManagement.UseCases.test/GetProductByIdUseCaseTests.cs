@@ -51,7 +51,7 @@ namespace OrderManagement.UseCases.test
 
             // Act and Assert
             var input = new GetProductByIdInput(productId);
-            Assert.ThrowsAsync<ArgumentException>(() => useCase.Execute(input));
+            Assert.ThrowsAsync<NotFoundException>(() => useCase.Execute(input));
         }
     }
 }

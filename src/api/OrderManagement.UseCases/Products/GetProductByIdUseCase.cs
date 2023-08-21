@@ -1,4 +1,6 @@
-﻿using OrderManagement.Domain.Repositories;
+﻿using OrderManagement.Domain.Entites;
+using OrderManagement.Domain.Repositories;
+using OrderManagement.UseCases.Orders.Dto;
 using OrderManagement.UseCases.Products.Dto;
 
 namespace OrderManagement.UseCases.Products
@@ -18,9 +20,7 @@ namespace OrderManagement.UseCases.Products
             var product = await _productRepository.GetByIdAsync(input.ProductId);
             if (product == null)
             {
-                throw new ArgumentException(
-                    string.Format("ProductId {0} does not exists", input.ProductId)
-                    );
+                throw new NotFoundException($"Product with ID {input.ProductId} not found.");
             }
 
             return new GetProductByIdOutput(
@@ -28,7 +28,7 @@ namespace OrderManagement.UseCases.Products
                 product.Name,
                 product.Price,
                 product.Description,
-                product.Stock.Quantity
+                product.Stock == null ? 0 :product.Stock.Quantity
             );
         }
     }

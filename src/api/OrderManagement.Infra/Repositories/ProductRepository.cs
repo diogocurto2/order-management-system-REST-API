@@ -3,7 +3,7 @@ using OrderManagement.Domain.Entites;
 using OrderManagement.Domain.Repositories;
 using OrderManagement.Infra.Data;
 
-namespace ProductManagement.Infra.Repositories
+namespace OrderManagement.Infra.Repositories
 {
     public class ProductRepository : IProductRepository
     {
@@ -16,7 +16,7 @@ namespace ProductManagement.Infra.Repositories
 
         public async Task<Product> GetByIdAsync(int productId)
         {
-            return await _dbContext.Products.FindAsync(productId);
+            return await _dbContext.Products.Include(p => p.Stock).FirstOrDefaultAsync(p => p.Id.Equals(productId));
         }
 
         public async Task<List<Product>> GetAllAsync()

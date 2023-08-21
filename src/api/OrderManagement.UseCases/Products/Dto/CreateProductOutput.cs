@@ -1,4 +1,4 @@
-﻿namespace ProductManagement.UseCases.Products.Dto
+﻿namespace OrderManagement.UseCases.Products.Dto
 {
     public class CreateProductOutput
     {

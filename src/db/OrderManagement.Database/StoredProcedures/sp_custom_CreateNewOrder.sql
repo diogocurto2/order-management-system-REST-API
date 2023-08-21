@@ -10,25 +10,26 @@ AS
         -- Validate CustomerID
     IF NOT EXISTS (SELECT 1 FROM [dbo].[Customers] WHERE @CustomerID = @CustomerID)
     BEGIN
-        RAISERROR ('Invalid CustomerID.', 1, 1);
+        RAISERROR ('Invalid CustomerID.', 18, 0);
         RETURN;
     END;
 
     -- Validate ProductOrders
     IF (SELECT COUNT(*) FROM @OrderItems) = 0
     BEGIN
-        RAISERROR('No product orders provided.', 1, 1);
+        RAISERROR('No product orders provided.', 18, 0);
         RETURN;
     END;
 
     -- Validate ProductIDs in ProductOrders
     IF EXISTS (
-        SELECT 1
-        FROM [dbo].[Products] P
-        WHERE not exists (SELECT 1 from @OrderItems oi where oi.ProductID = p.Id)
+        SELECT oi.ProductID
+	        FROM @OrderItems oi
+		        LEFT OUTER JOIN Products p ON oi.ProductID = p.Id
+	        WHERE p.Id IS NULL
     )
     BEGIN
-        RAISERROR('Invalid ProductID in ProductOrders.', 1, 1);
+        RAISERROR('Invalid ProductID in ProductOrders.', 18, 0);
         RETURN;
     END;
 
@@ -44,7 +45,7 @@ AS
         )
     )
     BEGIN
-        RAISERROR ('Insufficient stock for some products.', 16, 1);
+        RAISERROR ('Insufficient stock for some products.', 18, 0);
         RETURN;
     END;
 

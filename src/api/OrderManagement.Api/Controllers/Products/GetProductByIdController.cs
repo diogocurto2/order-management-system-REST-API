@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using OrderManagement.Domain.Entites;
+using OrderManagement.UseCases;
 using OrderManagement.UseCases.Products;
 using OrderManagement.UseCases.Products.Dto;
 
@@ -38,7 +38,7 @@ namespace OrderManagement.Api.Controllers.Products
                 var product = await _getProductByIdUseCase.Execute(new GetProductByIdInput(productId));
                 return Ok(product);
             }
-            catch (ArgumentException ex)
+            catch (NotFoundException)
             {
                 return NotFound();
             }

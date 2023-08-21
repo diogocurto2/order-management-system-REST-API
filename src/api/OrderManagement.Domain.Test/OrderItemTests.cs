@@ -1,9 +1,4 @@
 ﻿using OrderManagement.Domain.Entites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrderManagement.Domain.Test
 {
@@ -24,7 +19,6 @@ namespace OrderManagement.Domain.Test
             Assert.NotNull(orderItem);
             Assert.That(orderItem.ProductId, Is.EqualTo(product.Id));
             Assert.That(orderItem.Quantity, Is.EqualTo(quantity));
-            Assert.That(orderItem.Cost, Is.EqualTo(quantity * product.Price));
         }
 
     }

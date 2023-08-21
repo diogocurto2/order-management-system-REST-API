@@ -41,4 +41,4 @@ VALUES
 INSERT INTO [dbo].[Stocks] (ProductId, Quantity)
 VALUES
     (1, 100), 
-    (2, 150),
+    (2, 150);
