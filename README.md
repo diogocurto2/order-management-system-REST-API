@@ -1,4 +1,27 @@
 ﻿# Order Management System REST API
+## Objective
+The goal of this project is to build an exemplary project with the specifications provided in the section: `The code Challenge`.
+
+## Compose sample application: ASP.NET with MS SQL server database
+```
+.
+├── api
+│   ├── OrderManagement.Api
+|   └── OrderManagement.Domain
+|   └── OrderManagement.Infra
+|   └── OrderManagement.UseCases
+├── api.Tests
+│   ├── OrderManagement.Api.Tests
+|   └── OrderManagement.Domain.Tests
+|   └── OrderManagement.Infra.Tests
+|   └── OrderManagement.UseCases.Tests
+└── db
+    ├── OrderManagement.DataBase
+```
+
+
+
+# The Code Challenge
 
 This project requires you to develop a simplified Order Management System using C#, .NET, Microsoft SQL Server, Entity Framework, T-SQL, and stored procedures.
 
